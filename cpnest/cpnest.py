@@ -40,6 +40,7 @@ class CPNest(object):
     resume: determines whether cpnest will resume a run or run from scratch. Default: False.
     proposal: dictionary/list with custom jump proposals. key 'mhs' for the
     Metropolis-Hastings sampler, 'hmc' for the Hamiltonian Monte-Carlo sampler. Default: None
+    tolerance: float, dZ stopping criterion. Default is dZ == 0.1
     """
     def __init__(self,
                  usermodel,
@@ -52,7 +53,9 @@ class CPNest(object):
                  nthreads     = None,
                  nhamiltonian = 0,
                  resume       = False,
-                 proposal     = None):
+                 proposal     = None,
+                 tolerance    = 0.1):
+
         if nthreads is None:
             self.nthreads = mp.cpu_count()
         else:
@@ -93,7 +96,8 @@ class CPNest(object):
                         verbose        = verbose,
                         seed           = self.seed,
                         prior_sampling = False,
-                        manager        = self.manager)
+                        manager        = self.manager,
+                        tolerance      = tolerance)
         else:
             self.NS = NestedSampler.resume(resume_file, self.manager, self.user)
 
